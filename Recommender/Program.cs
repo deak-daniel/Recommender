@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Recommender recommender = new Recommender("movies1.csv");
         }
     }
 }

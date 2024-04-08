@@ -8,6 +8,9 @@ namespace Recommender
 {
     internal class Recommender
     {
+        #region Fields
+        private int[,] TF_IDF;
+        #endregion
         #region Public properties
         public List<string> Data { get; private set; }
 
@@ -22,6 +25,8 @@ namespace Recommender
         {
             Data = new List<string>();
             ExtractData(inputfile);
+            TF_IDF = new int[Data.Count, Data.Count];
+            ComputeTfIdf();
         }
         #endregion // Constructor
 
@@ -32,10 +37,25 @@ namespace Recommender
         /// <param name="inputfile">Input file path.</param>
         private void ExtractData(string inputfile)
         {
-            foreach (string item in File.ReadAllLines(inputfile))
+            foreach (string item in File.ReadAllLines(inputfile).Skip(1))
             {
                 string[] helper = item.Split(",");
-                Data.Add($"{helper[0]} {helper[1]} {helper[2]} {helper[4]}");
+                Data.Add(item);
+            }
+        }
+        /// <summary>
+        /// Computing TF-IDF (Term frequency - inverse document frequency
+        /// </summary>
+        private void ComputeTfIdf()
+        {
+            for (int i = 0; i < Data.Count; i++)
+            {
+                string[] helper = Data[i].Split(" ");
+
+                for (int j = 0; j < helper.Length; j++)
+                {
+                    TF_IDF[i, j] = (int)(helper.Count(x => x.Contains(helper[j])) * Math.Log(Data.Count / Data.Count(x => x.Contains(helper[j]) )));
+                }
             }
         }
         #endregion
